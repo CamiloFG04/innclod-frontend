@@ -19,9 +19,7 @@ const createDocument = () => {
     <div class="row">
       <div class="col">
         <LoaderSpinner v-if="documentsQuery.isLoading.value" />
-        <span v-else-if="!documentsQuery.data" class="h3-text">
-          No se encontró información
-        </span>
+
         <DocumentCard v-else :documents="documentsQuery.data.value! || []" />
       </div>
     </div>

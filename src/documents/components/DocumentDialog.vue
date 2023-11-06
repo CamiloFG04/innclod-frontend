@@ -21,8 +21,8 @@ const { documentMutation, documentEditMutation } = useDocumentMutation();
 
 const isOpen = ref<boolean>();
 const DOC_ID = ref<number | undefined>();
-const DOC_NOMBRE = ref<string>('');
-const DOC_CONTENIDO = ref<string>('');
+const DOC_NOMBRE = ref<string | undefined>('');
+const DOC_CONTENIDO = ref<string | undefined>('');
 const DOC_ID_TIPO = ref<number | undefined>();
 const DOC_ID_PROCESO = ref<number | undefined>();
 
@@ -37,6 +37,19 @@ if (props.documentData) {
 watch(props, () => {
   isOpen.value = props.isOpenProp;
 });
+
+watch(
+  () => props.documentData,
+  (isSuccess) => {
+    if (isSuccess) {
+      DOC_ID.value = props.documentData?.DOC_ID;
+      DOC_NOMBRE.value = props.documentData?.DOC_NOMBRE;
+      DOC_CONTENIDO.value = props.documentData?.DOC_CONTENIDO;
+      DOC_ID_TIPO.value = props.documentData?.DOC_ID_TIPO;
+      DOC_ID_PROCESO.value = props.documentData?.DOC_ID_PROCESO;
+    }
+  }
+);
 
 watch(
   () => documentMutation.isSuccess.value,

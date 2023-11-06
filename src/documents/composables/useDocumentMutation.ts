@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { innClodApi } from '../../api/innClodApi';
-import { Documento } from '../interfaces/document';
+import { DocumentResponse } from '../interfaces/documentsResponse';
 
 interface ArgsCreate {
-  DOC_NOMBRE: string;
-  DOC_CONTENIDO: string;
+  DOC_NOMBRE: string | undefined;
+  DOC_CONTENIDO: string | undefined;
   DOC_ID_TIPO: number | undefined;
   DOC_ID_PROCESO: number | undefined;
 }
@@ -17,12 +17,16 @@ interface ArgsEdit {
   DOC_ID_PROCESO?: number;
 }
 
+interface ArgsDelete {
+  DOC_ID: number | undefined;
+}
+
 const addDocument = async ({
   DOC_NOMBRE,
   DOC_CONTENIDO,
   DOC_ID_TIPO,
   DOC_ID_PROCESO,
-}: ArgsCreate): Promise<Documento> => {
+}: ArgsCreate): Promise<DocumentResponse> => {
   const access_token = localStorage.getItem('access_token');
   const newDocumentData = {
     DOC_NOMBRE,
@@ -30,7 +34,7 @@ const addDocument = async ({
     DOC_ID_TIPO,
     DOC_ID_PROCESO,
   };
-  const { data } = await innClodApi.post<Documento>(
+  const { data } = await innClodApi.post<DocumentResponse>(
     '/documentos/create',
     newDocumentData,
     {
@@ -48,7 +52,7 @@ const editDocument = async ({
   DOC_CONTENIDO,
   DOC_ID_TIPO,
   DOC_ID_PROCESO,
-}: ArgsEdit): Promise<Documento> => {
+}: ArgsEdit): Promise<DocumentResponse> => {
   const access_token = localStorage.getItem('access_token');
   const documentData = {
     DOC_NOMBRE,
@@ -56,9 +60,25 @@ const editDocument = async ({
     DOC_ID_TIPO,
     DOC_ID_PROCESO,
   };
-  const { data } = await innClodApi.put<Documento>(
+  const { data } = await innClodApi.put<DocumentResponse>(
     `/documentos/update/${DOC_ID}`,
     documentData,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+
+  return data;
+};
+
+const DeleteDocument = async ({
+  DOC_ID,
+}: ArgsDelete): Promise<DocumentResponse> => {
+  const access_token = localStorage.getItem('access_token');
+  const { data } = await innClodApi.delete<DocumentResponse>(
+    `/documentos/delete/${DOC_ID}`,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -80,7 +100,10 @@ const useDocumentMutation = () => {
       queryClient.refetchQueries(['documents'], {
         exact: false,
       });
-      queryClient.setQueryData(['document', document.DOC_ID], document);
+      queryClient.setQueryData(
+        ['document', document.data.DOC_ID],
+        document.data
+      );
     },
   });
 
@@ -100,9 +123,26 @@ const useDocumentMutation = () => {
     },
   });
 
+  const documentDeleteMutation = useMutation(DeleteDocument, {
+    onSuccess: (document) => {
+      queryClient.removeQueries({
+        queryKey: ['document', document.data.DOC_ID],
+        exact: true,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['documents'],
+        exact: false,
+      });
+      queryClient.refetchQueries(['documents'], {
+        exact: false,
+      });
+    },
+  });
+
   return {
     documentMutation,
     documentEditMutation,
+    documentDeleteMutation,
   };
 };
 

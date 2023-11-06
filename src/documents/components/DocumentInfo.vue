@@ -34,7 +34,7 @@ const router = useRouter();
     <q-btn
       color="black"
       label="Volver"
-      @click="router.push({ name: 'home' })"
+      @click="router.push({ name: 'documents' })"
     />
   </div>
 </template>

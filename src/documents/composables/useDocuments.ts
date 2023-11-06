@@ -13,7 +13,9 @@ const getDocuments = async (): Promise<Document> => {
 };
 
 const useDocuments = () => {
-  const documentsQuery = useQuery(['documents'], getDocuments);
+  const documentsQuery = useQuery(['documents'], getDocuments, {
+    staleTime: 1000 * 60,
+  });
 
   return {
     documentsQuery,

@@ -46,7 +46,7 @@ const useAuth = () => {
       if (response instanceof AxiosError) {
         Swal.fire('Error', response.response?.data.error, 'error');
       } else {
-        router.push({ name: 'home' });
+        router.push({ name: 'documents' });
       }
     } catch (error) {
       Swal.fire('Error', 'Error inesperado', 'error');

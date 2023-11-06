@@ -5,7 +5,7 @@ const isAuthenticatedGuard = async (to, from, next) => {
   const { success } = await checkAuthentication();
 
   if (success) next();
-  else next({ name: 'auth' });
+  else next({ name: 'login' });
 };
 
 export default isAuthenticatedGuard;

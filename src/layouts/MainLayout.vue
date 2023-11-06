@@ -19,13 +19,20 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> MENU </q-item-label>
+        <q-item
+          v-for="item in options"
+          :key="item.title"
+          clickable
+          v-ripple
+          @click="item.click"
+        >
+          <q-item-section avatar>
+            <q-icon color="primary" :name="item.icon" />
+          </q-item-section>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+          <q-item-section>{{ item.title }}</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -38,18 +45,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/useAuth';
+import { useRouter } from 'vue-router';
 const authStore = useAuthStore();
+const router = useRouter();
 const name = authStore.user?.name;
-import EssentialLink, {
-  EssentialLinkProps,
-} from 'components/EssentialLink.vue';
+const logout = () => {
+  authStore.logout();
+  router.push({ name: 'login' });
+};
+interface Props {
+  title: string;
+  icon?: string;
+  click: () => void;
+}
 
-const essentialLinks: EssentialLinkProps[] = [
+const options: Props[] = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    title: 'Cerrar sesión',
+    icon: 'logout',
+    click: logout,
   },
 ];
 
