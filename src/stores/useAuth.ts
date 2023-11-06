@@ -27,5 +27,11 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = newUser;
       status.value = 'authenticated';
     },
+    logout() {
+      localStorage.removeItem('access_token');
+      accessToken.value = undefined;
+      user.value = undefined;
+      status.value = 'not-authenticated';
+    },
   };
 });

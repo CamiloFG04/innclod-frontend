@@ -11,9 +11,9 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> Innclod </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>Usuario {{ name }}</div>
       </q-toolbar>
     </q-header>
 
@@ -37,6 +37,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useAuthStore } from '../stores/useAuth';
+const authStore = useAuthStore();
+const name = authStore.user?.name;
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';

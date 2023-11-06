@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import useAuth from '../composables/useAuth';
-// import { useRouter } from 'vue-router';
+
 const email = ref('test@test.com');
 const password = ref('1234qwerty');
-const { login } = useAuth();
+const { onSubmit } = useAuth();
 </script>
 
 <template>
@@ -15,7 +15,7 @@ const { login } = useAuth();
     <div class="row">
       <q-card flat bordered class="q-pa-lg shadow-1">
         <q-card-section>
-          <q-form class="q-gutter-md" @submit="login(email, password)">
+          <q-form class="q-gutter-md" @submit="onSubmit(email, password)">
             <q-input
               square
               filled
